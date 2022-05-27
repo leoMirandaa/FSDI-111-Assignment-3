@@ -38,11 +38,9 @@ def get_all_users():
 @app.get("/users/<int:pk>")
 def get_user_by_id(pk):
   record = user.select_by_id(pk)
-  if not record:
-    out = {
-      "status": "ok",
-      "user": record
-    }
+  out = {
+    "status": "ok",
+  }
   if not record:
     out["status"] = "error"
     out["message"] = "not found"
