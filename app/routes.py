@@ -5,6 +5,8 @@ from flask import (
 from datetime import datetime
 from app.database import user #user = module, it has init.py
 
+from .helper.validate import validate_entry
+
 app = Flask(__name__)
 
 VERSION = "1.0.0"
@@ -52,8 +54,17 @@ def get_user_by_id(pk):
 @app.post("/users") #request context object
 def create_user():
   user_data = request.json
-  user.insert(user_data)
-  return "", 204
+
+  is_valid = validate_entry(user_data)
+
+  if is_valid == True:
+    user.insert(user_data)
+    return "", 204
+  else:
+    return "", 404
+
+  # user.insert(user_data)
+  # return "", 204
 
 @app.put("/users/<int:pk>")
 def update_user(pk):
