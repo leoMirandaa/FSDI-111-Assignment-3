@@ -1,4 +1,4 @@
-Acceptance criteria:
+# Acceptance criteria:
 
 1. It is possible to create users.
 
