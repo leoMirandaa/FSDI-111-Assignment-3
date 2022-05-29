@@ -1,4 +1,5 @@
-# Acceptance criteria:
+# Assignment 2
+## Acceptance criteria:
 
 1. It is possible to create users.
 
