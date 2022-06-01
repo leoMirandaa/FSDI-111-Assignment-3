@@ -4,8 +4,9 @@ from flask import (
 )
 from datetime import datetime
 from app.database import user #user = module, it has init.py
+from app.database import vehicle #user = module, it has init.py
 
-from .helper.validate import validate_entry
+from .helper.validate import validate_entry, validate_vehicle
 
 app = Flask(__name__)
 
@@ -75,4 +76,52 @@ def update_user(pk):
 @app.delete("/users/<int:pk>")
 def delete_user(pk):
   user.deactivate_user(pk)
+  return "", 204
+
+# ----------------------------------------
+# -----VEHICLE----------------------------
+# ----------------------------------------
+@app.get("/vehicles")
+def get_all_vehicles():
+  vehicle_list = vehicle.scan()
+  out = {
+    "status": "ok",
+    "vehicle": vehicle_list
+  }
+  return out
+
+
+@app.get("/vehicles/<int:pk>")
+def get_vehicle_by_id(pk):
+  record = vehicle.select_by_id(pk)
+  out = {
+    "status": "ok",
+  }
+  if not record:
+    out["status"] = "error"
+    out["message"] = "not found"
+    return out, 404
+  else:
+    out["user"] = record
+  return out
+
+@app.post("/vehicles") #request context object
+def create_vehicle():
+  vehicle_data = request.json
+  is_valid = validate_vehicle(vehicle_data)
+  if is_valid == True:
+    vehicle.insert(vehicle_data)
+    return "", 204
+  else:
+    return "", 404
+
+@app.put("/vehicles/<int:pk>")
+def update_vehicle(pk):
+  vehicle_data = request.json
+  vehicle.update(pk, vehicle_data)
+  return "", 204
+
+@app.delete("/vehicles/<int:pk>")
+def delete_vehicles(pk):
+  vehicle.deactivate_vehicle(pk)
   return "", 204
